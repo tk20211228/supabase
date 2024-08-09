@@ -136,15 +136,11 @@ export const generateOtherRoutes = (ref?: string, project?: Project): Route[] =>
 
 export const generateSettingsRoutes = (ref?: string, project?: Project): Route[] => {
   return [
-    ...(IS_PLATFORM
-      ? [
-          {
-            key: 'settings',
-            label: 'Project Settings',
-            icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-            link: ref && `/project/${ref}/settings/general`,
-          },
-        ]
-      : []),
+    {
+      key: 'settings',
+      label: 'Project Settings',
+      icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link: ref && `/project/${ref}/settings/general`,
+    },
   ]
 }

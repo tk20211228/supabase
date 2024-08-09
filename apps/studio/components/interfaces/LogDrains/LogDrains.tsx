@@ -1,6 +1,6 @@
 import { LogDrainData, useLogDrainsQuery } from 'data/log-drains/log-drains-query'
 import { LOG_DRAIN_TYPES, LogDrainType } from './LogDrains.constants'
-import { useParams } from 'common'
+import { IS_PLATFORM, useParams } from 'common'
 import CardButton from 'components/ui/CardButton'
 import Panel from 'components/ui/Panel'
 import { GenericSkeletonLoader } from 'ui-patterns'
@@ -37,7 +37,10 @@ export function LogDrains({
   const org = useSelectedOrganization()
 
   const { isLoading: orgPlanLoading, plan } = useCurrentOrgPlan()
-  const logDrainsEnabled = !orgPlanLoading && (plan?.id === 'team' || plan?.id === 'enterprise')
+
+  const logDrainsEnabled = IS_PLATFORM
+    ? !orgPlanLoading && (plan?.id === 'team' || plan?.id === 'enterprise')
+    : true
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedLogDrain, setSelectedLogDrain] = useState<LogDrainData | null>(null)
@@ -54,6 +57,7 @@ export function LogDrains({
       enabled: logDrainsEnabled,
     }
   )
+  const hasLogDrains = !!logDrains?.length
   const { mutate: deleteLogDrain } = useDeleteLogDrainMutation({
     onSuccess: () => {
       setIsDeleteModalOpen(false)
@@ -87,7 +91,7 @@ export function LogDrains({
     )
   }
 
-  if (!isLoading && logDrains?.length === 0) {
+  if (!isLoading && !hasLogDrains) {
     return (
       <div className="grid grid-cols-2 gap-3">
         {LOG_DRAIN_TYPES.map((src) => (

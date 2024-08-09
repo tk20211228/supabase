@@ -25,64 +25,69 @@ export const generateSettingsMenu = (
   const warehouseEnabled = features?.warehouse ?? false
   const logDrainsEnabled = features?.logDrains ?? false
 
+  // If user is in self hosted mode, show log drains, otherwise show only if they are enabled
+  const showLogDrains = IS_PLATFORM ? logDrainsEnabled : true
+
   return [
-    {
-      title: 'Project Settings',
-      items: [
-        {
-          name: 'General',
-          key: 'general',
-          url: `/project/${ref}/settings/general`,
-          items: [],
-        },
-        {
-          name: 'Infrastructure',
-          key: 'infrastructure',
-          url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/infrastructure`,
-          items: [],
-        },
-        ...(IS_PLATFORM
-          ? [
+    ...(IS_PLATFORM
+      ? [
+          {
+            title: 'Project Settings',
+            items: [
+              {
+                name: 'General',
+                key: 'general',
+                url: `/project/${ref}/settings/general`,
+                items: [],
+              },
+              {
+                name: 'Infrastructure',
+                key: 'infrastructure',
+                url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/infrastructure`,
+                items: [],
+              },
               {
                 name: 'Integrations',
                 key: 'integrations',
                 url: `/project/${ref}/settings/integrations`,
                 items: [],
               },
-            ]
-          : []),
-        ...[
-          {
-            name: 'Add Ons',
-            key: 'addons',
-            url: `/project/${ref}/settings/addons`,
-            items: [],
+              {
+                name: 'Add Ons',
+                key: 'addons',
+                url: `/project/${ref}/settings/addons`,
+                items: [],
+              },
+              {
+                name: 'Vault',
+                key: 'vault',
+                url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/vault/secrets`,
+                items: [],
+                label: 'BETA',
+              },
+            ],
           },
-        ],
-        {
-          name: 'Vault',
-          key: 'vault',
-          url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/vault/secrets`,
-          items: [],
-          label: 'BETA',
-        },
-      ],
-    },
+        ]
+      : []),
     {
       title: 'Configuration',
       items: [
-        {
-          name: 'Database',
-          key: 'database',
-          url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/database`,
-          items: [],
-        },
-        {
-          name: 'API',
-          key: 'api',
-          url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/api`,
-          items: [],
-        },
+        ...(IS_PLATFORM
+          ? [
+              {
+                name: 'Database',
+                key: 'database',
+                url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/database`,
+                items: [],
+              },
+              {
+                name: 'API',
+                key: 'api',
+                url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/api`,
+                items: [],
+              },
+            ]
+          : []),
         ...(IS_PLATFORM && authEnabled
           ? [
               {
@@ -123,7 +128,7 @@ export const generateSettingsMenu = (
               },
             ]
           : []),
-        ...(IS_PLATFORM && logDrainsEnabled
+        ...(showLogDrains
           ? [
               {
                 name: `Log Drains`,
@@ -136,23 +141,27 @@ export const generateSettingsMenu = (
       ],
     },
 
-    {
-      title: 'Billing',
-      items: [
-        {
-          name: 'Subscription',
-          key: 'subscription',
-          url: `/org/${organization?.slug}/billing`,
-          items: [],
-        },
+    ...(IS_PLATFORM
+      ? [
+          {
+            title: 'Billing',
+            items: [
+              {
+                name: 'Subscription',
+                key: 'subscription',
+                url: `/org/${organization?.slug}/billing`,
+                items: [],
+              },
 
-        {
-          name: 'Usage',
-          key: 'usage',
-          url: `/org/${organization?.slug}/usage?projectRef=${ref}`,
-          items: [],
-        },
-      ],
-    },
+              {
+                name: 'Usage',
+                key: 'usage',
+                url: `/org/${organization?.slug}/usage?projectRef=${ref}`,
+                items: [],
+              },
+            ],
+          },
+        ]
+      : []),
   ]
 }

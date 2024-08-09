@@ -218,7 +218,8 @@ export function LogDrainDestinationSheetForm({
 
                 // Temp check to make sure the name is unique
                 const logDrainName = form.getValues('name')
-                const logDrainExists = logDrains?.find((drain) => drain.name === logDrainName)
+                const logDrainExists =
+                  !!logDrains?.length && logDrains?.find((drain) => drain.name === logDrainName)
                 if (logDrainExists && mode === 'create') {
                   toast.error('Log drain name already exists')
                   return
@@ -462,33 +463,35 @@ export function LogDrainDestinationSheetForm({
           )}
         </SheetSection>
 
-        <SheetSection className="border-t mt-4 bg-background-alternative-200">
-          <FormItemLayout
-            isReactForm={false}
-            layout="horizontal"
-            label={
-              <div className="text-foreground-light">
-                Additional drain cost
-                <div className="text-foreground-lighter mt-2">
-                  <Link
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline flex gap-1 items-center"
-                    href="https://supabase.com/docs/guides/platform/log-drains"
-                  >
-                    Documentation <ExternalLink className="w-4 h-4" />
-                  </Link>
+        {IS_PLATFORM && (
+          <SheetSection className="border-t mt-4 bg-background-alternative-200">
+            <FormItemLayout
+              isReactForm={false}
+              layout="horizontal"
+              label={
+                <div className="text-foreground-light">
+                  Additional drain cost
+                  <div className="text-foreground-lighter mt-2">
+                    <Link
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline flex gap-1 items-center"
+                      href="https://supabase.com/docs/guides/platform/log-drains"
+                    >
+                      Documentation <ExternalLink className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            }
-          >
-            <ul className="text-right text-foreground-light">
-              <li className="text-brand-link text-base">$60 / drain / month</li>
-              <li>$0.20 per million events</li>
-              <li>$0.09 per GB</li>
-            </ul>
-          </FormItemLayout>
-        </SheetSection>
+              }
+            >
+              <ul className="text-right text-foreground-light">
+                <li className="text-brand-link text-base">$60 / drain / month</li>
+                <li>$0.20 per million events</li>
+                <li>$0.09 per GB</li>
+              </ul>
+            </FormItemLayout>
+          </SheetSection>
+        )}
 
         <SheetFooter className="p-content">
           <Button form={FORM_ID} loading={isLoading} htmlType="submit" type="primary">
