@@ -27,6 +27,11 @@ Roles and users are essentially the same in Postgres, however if you want to use
 create role "role_name" with login password 'extremely_secure_password';
 ```
 
+<Admonition type="note">
+  For security purposes, passwords for custom roles are not backed up and, following a restore, they
+  would need to be reset. See [here](/docs/guides/platform/backups#daily-backups) for more details
+</Admonition>
+
 ## Passwords
 
 Your Postgres database is the core of your Supabase project, so it's important that every role has a strong, secure password at all times. Here are some tips for creating a secure password:

@@ -118,6 +118,11 @@ As such, we are deprecating md5 in favor of [scram-sha-256](https://www.postgres
 
 We automatically migrate Supabase-managed roles' passwords to scram-sha-256 during the upgrade process, but you will need to manually migrate the passwords of any custom roles you have created, else you won't be able to connect using them after the upgrade.
 
+<Admonition type="note">
+  For security purposes, passwords for custom roles are not backed up and, following a restore, they
+  would need to be reset. See [here](/docs/guides/platform/backups#daily-backups) for more details
+</Admonition>
+
 To identify roles using the md5 hashing method and migrate their passwords, you can use the following SQL statements after the upgrade:
 
 ```sql
