@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 import { z } from 'zod'
 
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@ui/components/shadcn/ui/select'
-import { useParams } from 'common'
+import { IS_PLATFORM, useParams } from 'common'
 import { LogDrainData, useLogDrainsQuery } from 'data/log-drains/log-drains-query'
 import {
   Button,
