@@ -1010,6 +1010,8 @@ export interface paths {
   '/platform/replication/{ref}/sources': {
     /** Gets replication sources */
     get: operations['ReplicationSourcesController_getSources']
+    /** Creates a replication source */
+    post: operations['ReplicationSourcesController_createSource']
   }
   '/platform/reset-password': {
     /** Reset password for email */
@@ -1245,7 +1247,7 @@ export interface paths {
      * Create a function
      * @description Creates a function and adds it to the specified project.
      */
-    post: operations['SystemFunctionsController_createFunction']
+    post: operations['v1-create-a-function']
     /** Deletes all Edge Functions from a project */
     delete: operations['SystemFunctionsController_systemDeleteAllFunctions']
   }
@@ -2141,7 +2143,7 @@ export interface paths {
      * Create a function
      * @description Creates a function and adds it to the specified project.
      */
-    post: operations['FunctionsController_createFunction']
+    post: operations['v1-create-a-function']
   }
   '/v1/projects/{ref}/functions/{function_slug}': {
     /**
@@ -3012,6 +3014,9 @@ export interface components {
        */
       name: string
       value: string
+    }
+    CreateSourceResponse: {
+      id: number
     }
     CreateStorageBucketBody: {
       allowed_mime_types: string[]
@@ -10092,19 +10097,11 @@ export interface operations {
       }
     }
   }
-  /**
-   * Create a function
-   * @description Creates a function and adds it to the specified project.
-   */
+  /** Creates project pg.function */
   FunctionsController_createFunction: {
     parameters: {
-      query?: {
-        slug?: string
-        name?: string
-        verify_jwt?: boolean
-        import_map?: boolean
-        entrypoint_path?: string
-        import_map_path?: string
+      header: {
+        'x-connection-encrypted': string
       }
       path: {
         /** @description Project ref */
@@ -10113,20 +10110,19 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['V1CreateFunctionBody']
-        'application/vnd.denoland.eszip': components['schemas']['V1CreateFunctionBody']
+        'application/json': components['schemas']['CreateFunctionBody']
       }
     }
     responses: {
       201: {
         content: {
-          'application/json': components['schemas']['FunctionResponse']
+          'application/json': components['schemas']['PostgresFunction']
         }
       }
       403: {
         content: never
       }
-      /** @description Failed to create project's function */
+      /** @description Failed to create pg.function */
       500: {
         content: never
       }
@@ -13477,6 +13473,26 @@ export interface operations {
       }
     }
   }
+  /** Creates a replication source */
+  ReplicationSourcesController_createSource: {
+    parameters: {
+      path: {
+        /** @description Project ref */
+        ref: string
+      }
+    }
+    responses: {
+      201: {
+        content: {
+          'application/json': components['schemas']['CreateSourceResponse']
+        }
+      }
+      /** @description Failed to create replication source */
+      500: {
+        content: never
+      }
+    }
+  }
   /** Reset password for email */
   ResetPasswordController_resetPassword: {
     requestBody: {
@@ -14789,7 +14805,7 @@ export interface operations {
    * Create a function
    * @description Creates a function and adds it to the specified project.
    */
-  SystemFunctionsController_createFunction: {
+  'v1-create-a-function': {
     parameters: {
       query?: {
         slug?: string
