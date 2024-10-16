@@ -1013,6 +1013,10 @@ export interface paths {
     /** Creates a replication source */
     post: operations['ReplicationSourcesController_createSource']
   }
+  '/platform/replication/{ref}/sources/{source_id}/publications': {
+    /** Gets source publications */
+    get: operations['ReplicationSourcesController_getPublications']
+  }
   '/platform/reset-password': {
     /** Reset password for email */
     post: operations['ResetPasswordController_resetPassword']
@@ -2769,7 +2773,7 @@ export interface components {
       description?: string
       name: string
       /** @enum {string} */
-      type: 'postgres' | 'bigquery' | 'webhook' | 'datadog' | 'elastic'
+      type: 'postgres' | 'bigquery' | 'webhook' | 'datadog' | 'elastic' | 'loki'
     }
     CreateBranchBody: {
       branch_name: string
@@ -4032,7 +4036,7 @@ export interface components {
       name: string
       token: string
       /** @enum {string} */
-      type: 'postgres' | 'bigquery' | 'webhook' | 'datadog' | 'elastic'
+      type: 'postgres' | 'bigquery' | 'webhook' | 'datadog' | 'elastic' | 'loki'
       user_id: number
     }
     LFEndpoint: {
@@ -5031,6 +5035,10 @@ export interface components {
       id: string
       saml?: components['schemas']['SamlDescriptor']
       updated_at?: string
+    }
+    Publication: {
+      name: string
+      tables: components['schemas']['Table'][]
     }
     PublicUrlOptions: {
       download?: boolean
@@ -13488,6 +13496,28 @@ export interface operations {
         }
       }
       /** @description Failed to create replication source */
+      500: {
+        content: never
+      }
+    }
+  }
+  /** Gets source publications */
+  ReplicationSourcesController_getPublications: {
+    parameters: {
+      path: {
+        /** @description Project ref */
+        ref: string
+        /** @description Source id */
+        source_id: number
+      }
+    }
+    responses: {
+      200: {
+        content: {
+          'application/json': components['schemas']['Publication'][]
+        }
+      }
+      /** @description Failed to get source publications */
       500: {
         content: never
       }
